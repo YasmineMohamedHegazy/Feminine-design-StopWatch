@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stopwatch</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    text-align: center;
+    padding-top: 50px;
+  }
+
+  .stopwatch {
+    background-color: #fff;
+    border: 2px solid dark pink;
+    border-radius: 8px;
+    width: 200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .stopwatch h1 {
+    font-size: 1.5em;
+    margin: 0 0 10px;
+  }
+
+  .stopwatch .controls {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center; /* Center align buttons */
+    flex-wrap: wrap; /* Enable wrapping for smaller screens */
+  }
+
+  .stopwatch .controls button {
+    font-size: 1em;
+    padding: 12px 16px; /* Increase padding for larger buttons */
+    margin: 5px; /* Adjust margin for spacing */
+    cursor: pointer;
+    background-color: pink; /* Pink background */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+  }
+
+  .stopwatch .controls button:hover {
+    background-color:#FFDCE2; /* Grey background on hover */
+  }
+
+  /* Adjust the lap button size to match the pause button */
+  .stopwatch #lapButton {
+    padding: 8px 16px;
+  }
+
+  .stopwatch #lapTimes {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+    margin: 10px 0 0;
+  }
+
+  .stopwatch #lapTimes li {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+  }
+  .stopwatch .fa-home {
+    color: black; /* Set the icon color to black */
+  }
+</style>
+</head>
+<body>
+
+<div class="stopwatch">
+
+  <h1>Stopwatch</h1>
+  <p id="stopwatchDisplay">00:00:00</p>
+
+  <div class="controls">
+    <button id="startButton" onclick="startStopwatch()">Start</button>
+    <button id="pauseButton" onclick="pauseStopwatch()">Pause</button>
+    <button id="resetButton" onclick="resetStopwatch()">Reset</button>
+
+
+
+  </div>
+  <a href="stopwatchmain.html">
+  <i class="fa fa-home" style="font-size:24px"></i>
+  </a>
+
+  <ul id="lapTimes"></ul>
+</div>
+
+<script>
+  let startTime;
+  let elapsedTime = 0;
+  let timerInterval;
+  let isRunning = false;
+
+  function startStopwatch() {
+    if (!isRunning) {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(updateStopwatchDisplay, 10); // Update display every 10ms
+      isRunning = true;
+    }
+  }
+
+  function pauseStopwatch() {
+    clearInterval(timerInterval);
+    isRunning = false;
+  }
+
+  function resetStopwatch() {
+  clearInterval(timerInterval);
+  isRunning = false;
+  elapsedTime = 0;
+  updateStopwatchDisplay(); // Update display to show 00:00:00
+  document.getElementById('lapTimes').innerHTML = ''; // Clear lap times list
+}
+
+  function updateStopwatchDisplay() {
+    let currentTime = Date.now();
+    elapsedTime = currentTime - startTime;
+    document.getElementById('stopwatchDisplay').textContent = formatTime(elapsedTime);
+  }
+
+  function formatTime(milliseconds) {
+    let totalSeconds = Math.floor(milliseconds / 1000);
+    let hours = Math.floor(totalSeconds / 3600);
+    let minutes = Math.floor((totalSeconds % 3600) / 60);
+    let seconds = totalSeconds % 60;
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  function recordLapTime() {
+    if (isRunning) {
+      let lapTime = elapsedTime;
+      let lapTimesElement = document.getElementById('lapTimes');
+      let lapItem = document.createElement('li');
+      lapItem.textContent = formatTime(lapTime);
+      lapTimesElement.appendChild(lapItem);
+    }
+  }
+</script>
+
+</body>
+</html>

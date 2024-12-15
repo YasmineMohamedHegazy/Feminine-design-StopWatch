@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alarm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .stopwatch {
+            background-color: #fff;
+            border: 2px solid darkpink;
+            border-radius: 8px;
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .stopwatch h1 {
+            font-size: 1.5em;
+            margin: 0 0 10px;
+            color: darkpink;
+        }
+        .stopwatch .alarm {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid pink;
+            border-radius: 4px;
+            background-color: pink;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .stopwatch .alarm label {
+            font-weight: bold;
+            color: darkpink;
+        }
+        .stopwatch .alarm input[type="datetime-local"] {
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .stopwatch .alarm button {
+            padding: 10px 20px;
+            margin-top: 5px;
+            cursor: pointer;
+            background-color: hotpink;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .stopwatch .alarm button:hover {
+            background-color: white;
+            color: black;
+        }
+        .stopwatch #alarmList {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin: 10px 0 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            font-size: 12px
+        }
+        .stopwatch #alarmList li {
+            padding: 8px;
+            border-bottom: 1px solid #fff;
+        }
+        .stopwatch .fa-home {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+<div class="stopwatch">
+    <h1>Alarm</h1>
+    <div class="alarm">
+        <label for="alarmDateTime">Set Alarm Date and Time:</label>
+        <input type="datetime-local" id="alarmDateTime">
+        <button onclick="setAlarm()">Set Alarm</button>
+        <ul id="alarmList"></ul>
+    </div>
+    <a href="stopwatchmain.html">
+        <i class="fa fa-home" style="font-size:24px"></i>
+    </a>
+</div>
+
+<script>
+    let alarms = [];
+
+    function setAlarm() {
+        const alarmDateTime = document.getElementById('alarmDateTime').value.trim();
+        if (alarmDateTime) {
+            const alarmDate = new Date(alarmDateTime);
+            if (alarmDate > new Date()) { // Check if the alarm time is in the future
+                alarms.push(alarmDate); // Store the alarm
+                updateAlarmList();
+                document.getElementById('alarmDateTime').value = ''; // Clear input
+                alert(`Alarm set for: ${alarmDate.toLocaleString()}`);
+            } else {
+                alert('Please set an alarm time in the future.');
+            }
+        } else {
+            alert('Please set a valid alarm time.');
+        }
+    }
+
+    function updateAlarmList() {
+        const alarmListElement = document.getElementById('alarmList');
+        alarmListElement.innerHTML = ''; // Clear existing list
+        alarms.forEach((alarm, index) => {
+            const alarmItem = document.createElement('li');
+            alarmItem.textContent = `Alarm ${index + 1}: ${alarm.toLocaleString()}`;
+            alarmListElement.appendChild(alarmItem);
+        });
+    }
+
+    function checkAlarms() {
+        const currentTime = new Date();
+        alarms.forEach((alarm, index) => {
+            if (alarm <= currentTime) {
+                alert(`Alarm ${index + 1} is ringing!`);
+                alarms.splice(index, 1); // Remove the alarm
+                updateAlarmList();
+            }
+        });
+    }
+
+    // Check alarms every second
+    setInterval(checkAlarms, 1000);
+</script>
+
+</body>
+</html>
